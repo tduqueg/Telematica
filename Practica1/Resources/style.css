@@ -1,0 +1,23 @@
+body {
+    background-color: #F7F7F7;
+    font-family: Arial, sans-serif;
+    color: #333333;
+  }
+  
+  h1 {
+    color: #0099FF;
+  }
+  
+  p {
+    font-size: 18px;
+    line-height: 1.5em;
+  }
+  
+  .caja {
+    background-color: #F2F2F2;
+    border: 1px solid #CCCCCC;
+    padding: 10px;
+    margin-top: 20px;
+    color: #666666;
+  }
+  
