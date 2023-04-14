@@ -159,7 +159,7 @@ int main(int argc, char const * argv[]){
             if (res_file == NULL){
                 // Enviar una respuesta de error 404 porque no se encontró el archivo de respuesta
                 response(new_socket, 404, "Not Found", "text/html", "<h1>404 No se encontró lo que está buscando pa :(</h1>");
-            } else if(strcamp(method, "HEAD") == 0){
+            } else if(strcmp(method, "HEAD") == 0){
                 
                 // El método es HEAD y el archivo de respuesta existe
                 printf("El método es HEAD y si se encontró :D\n");

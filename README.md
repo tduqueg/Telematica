@@ -106,7 +106,8 @@ La respuesta debería ser algo similar a esto:
   ```
 
 ### Solicitud POST
-La solicitud se realiza de la siguiente manera:
+
+La respuesta debería ser algo similar a esto:
 
 ```
   POST /submit_form HTTP/1.1
@@ -114,24 +115,4 @@ La solicitud se realiza de la siguiente manera:
   Content-Type: application/x-www-form-urlencoded
   Content-Length: 13
 
-  name=John&age=30
 ```
-
-La respuesta debería ser algo similar a esto:
-
-  ```HTML
-  HTTP/1.1 200 OK
-  Content-Type: text/html
-
-  <!DOCTYPE html>
-  <html>
-  <head>
-    <title>Form submitted</title>
-  </head>
-  <body>
-    <h1>Form submitted successfully</h1>
-    <p>Name: John</p>
-    <p>Age: 30</p>
-  </body>
-  </html>
-  ```
