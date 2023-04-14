@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
 
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -11,7 +12,7 @@
 
 void log_msg(char *msg, char * path) {
 
-    FILE * file = fopen(path, "a");
+    FILE * file = fopen(path,"a, ccs=UTF-8" );
     if (file == NULL) {
         printf("\n============ ADVERTENCIA ============\n");
         printf("No se pudo abrir el archivo de log!!!\n");
@@ -34,6 +35,9 @@ void response(int socket, int status, char * status_msg, char * content, char * 
 }
 
 int main(int argc, char const * argv[]){
+
+    // Establecer la localidad
+    setlocale(LC_ALL, "es_ES.utf8");
 
     // Validar argumentos de entrada del programa (puerto, path del archivo de log y path del archivo de respuesta)
     if( argc != 4){
