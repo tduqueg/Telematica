@@ -6,13 +6,13 @@ char postData[MAX_POST_DATA];
 
 int main(int argc, char **argv){
 
-    int listenfd,connfd,n;
+    int listenfd, connfd, n;
     struct sockaddr_in servaddr;
     uint8_t buff[MAXLINE+1];
     uint8_t recvline[MAXLINE+1];
 
     if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-    err_n_die("Error creando el socket!");
+        err_n_die("Error creando el socket!");
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
@@ -22,7 +22,7 @@ int main(int argc, char **argv){
     if ((bind(listenfd, (SA *) &servaddr, sizeof(servaddr))) < 0)
         err_n_die("Error en el bind!");
 
-    if ((listen(listenfd, 10 )) < 0)
+    if ((listen(listenfd, 10)) < 0)
         err_n_die("Error en el listen!");
 
     for (;;) {
@@ -83,6 +83,8 @@ int main(int argc, char **argv){
             printf("Solicitud POST para %s con tipo de contenido %s y longitud de contenido %d\n", uri, contentType, contentLength);
 
             if (contentLength > MAX_POST_DATA) {
+                snprintf((char*)buff, sizeof(buff), "HTTP/1.1 400 Bad Request\r\n\r\n");
+                write(connfd, (char*)buff, strlen((char*)buff));
                 err_n_die("Error: Se excedió el tamaño máximo permitido para los datos POST.");
             }
 
@@ -91,6 +93,8 @@ int main(int argc, char **argv){
             while (numBytes < contentLength) {
                 n = read(connfd, &postData[numBytes], contentLength - numBytes);
                 if (n < 1) {
+                    snprintf((char*)buff, sizeof(buff), "HTTP/1.1 400 Bad Request\r\n\r\n");
+                    write(connfd, (char*)buff, strlen((char*)buff));
                     err_n_die("Error al leer los datos POST.");
                 }
                 numBytes += n;
@@ -108,5 +112,9 @@ int main(int argc, char **argv){
 
             close(connfd);
 
+        } else {
+            snprintf((char*)buff, sizeof(buff), "HTTP/1.1 404 Not Found\r\n\r\n");
+            write(connfd, (char*)buff, strlen((char*)buff));
+            err_n_die("Error: Método HTTP no soportado.");
+        }}}
 
-}}}
