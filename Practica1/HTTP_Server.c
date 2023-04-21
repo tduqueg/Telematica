@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 2000000
 
 
 
@@ -49,55 +49,14 @@ char * get_mimetype(char * file_path){
         if (strcmp(extension, ".gif") == 0) {
             return "image/gif";
         }
-    
-        if (strcmp(extension, ".ico") == 0) {
-            return "image/x-icon";
-        }
-    
-        if (strcmp(extension, ".svg") == 0) {
-            return "image/svg+xml";
-        }
+
     
         if (strcmp(extension, ".pdf") == 0) {
             return "application/pdf";
         }
-    
-        if (strcmp(extension, ".zip") == 0) {
-            return "application/zip";
-        }
-    
-        if (strcmp(extension, ".rar") == 0) {
-            return "application/x-rar-compressed";
-        }
-    
-        if (strcmp(extension, ".gz") == 0 || strcmp(extension, ".gzip") == 0) {
-            return "application/gzip";
-        }
-    
-        if (strcmp(extension, ".tar") == 0) {
-            return "application/x-tar";
-        }
-    
-        if (strcmp(extension, ".mp3") == 0) {
-            return "audio/mpeg";
-        }
-    
-        if (strcmp(extension, ".wav") == 0) {
-            return "audio/wav";
-        }
-    
-        if (strcmp(extension, ".mp4") == 0) {
-            return "video/mp4";
-        }
-    
-        if (strcmp(extension, ".avi") == 0) {
-            return "video/x-msvideo";
-        }
-    
-        if (strcmp(extension, ".doc") == 0 || strcmp(extension, ".docx") == 0) {
-            return "application/msword";
-}
-return "application/octet-stream";
+
+
+    return "application/octet-stream";
 }
 
 void log_msg(char *msg, char * path) {
@@ -114,16 +73,15 @@ void log_msg(char *msg, char * path) {
 }
 
 
-void response(int socket, int status, char * status_msg, char * body, char * file_path){
-    
+void response(int socket, int status_code, char *status_message, char *content_type, char *body)
+{
     char buffer[BUFFER_SIZE] = {0};
-    char *content_type = get_mimetype(file_path);
-
-    sprintf(buffer, "HTTP/1.1 %d %s\nContent-Type: %s\n\n%s", status, status_msg, content_type, body);
+    sprintf(buffer, "HTTP/1.1 %d %s\nContent-Type: %s\n\n%s", status_code, status_message, content_type, body);
     send(socket, buffer, strlen(buffer), 0);
-    printf("¡Respuesta enviada! buffer: %s\n", buffer);
-
+    printf("Response sent:\n%s\n", buffer);
 }
+
+
 
 int main(int argc, char const * argv[]){
 
@@ -215,7 +173,7 @@ int main(int argc, char const * argv[]){
             if (res_file == NULL){
 
                 // Enviar una respuesta de error 404
-                response(new_socket, 404, "Not Found", "text/html", "<h1>404 No se encontró lo que está buscando pa :(</h1>");
+                response(new_socket, 404, "Not Found", get_mimetype(path), "<h1>404 No se encontró lo que está buscando pa :(</h1>");
 
             } else {
 
@@ -223,7 +181,7 @@ int main(int argc, char const * argv[]){
                 if(strcmp(method, "GET") == 0){
                     
                     // Enviar una respuesta de éxito 200
-                    printf("El método es GET y si se encontró y si se encontró :D\n");
+                    printf("El método es GET y si se encontró:D\n");
                     // Obtener el tamaño del archivo de respuesta
                     char file_buffer[BUFFER_SIZE];
                     // Leer el archivo de respuesta y almacenarlo en el buffer 
@@ -237,11 +195,11 @@ int main(int argc, char const * argv[]){
                     // Cerramos el archivo
                     fclose(res_file);
                     // Enviar la respuesta al cliente 
-                    response(new_socket, 200, "OK", "text/html", file_buffer);
+                    response(new_socket, 200, "OK", get_mimetype(path), file_buffer);
                 }else{
                     // Enviar una respuesta de error 400 (Bad Request)
                     fclose(res_file);
-                    response(new_socket, 400, "Bad Request", "text/html", "<h1>400 Hiciste mal el request pa :(</h1>");
+                    response(new_socket, 400, "Bad Request", get_mimetype(path), "<h1>400 Hiciste mal el request pa :(</h1>");
                 }
                 
             }
@@ -253,14 +211,14 @@ int main(int argc, char const * argv[]){
             // Validar que el archivo de respuesta exista
             if (res_file == NULL){
                 // Enviar una respuesta de error 404 porque no se encontró el archivo de respuesta
-                response(new_socket, 404, "Not Found", "text/html", "<h1>404 No se encontró lo que está buscando pa :(</h1>");
+                response(new_socket, 404, "Not Found", get_mimetype(path), "<h1>404 No se encontró lo que está buscando pa :(</h1>");
             } else if(strcmp(method, "HEAD") == 0){
                 
                 // El método es HEAD y el archivo de respuesta existe
                 printf("El método es HEAD y si se encontró :D\n");
                 fclose(res_file);
                 // Enviar una respuesta de éxito 200
-                response(new_socket, 200, "OK", "text/html", "");
+                response(new_socket, 200, "OK", get_mimetype(path), "");
             
             } else if (strcmp(method, "POST") == 0){
 
@@ -294,14 +252,14 @@ int main(int argc, char const * argv[]){
                 // Imprimir el body del request
                 printf("Body: %s\n", body);
                 // Enviar una respuesta de éxito 200
-                response(new_socket, 200, "OK", "text/html", "<h1>200 Todo bien pa :D</h1>");
+                response(new_socket, 200, "OK", get_mimetype(path), "<h1>200 Todo bien pa :D</h1>");
                 // Liberar la memoria del body
                 free(body);
 
             } else{
                 // Enviar una respuesta de error 400 (Bad Request)
                 fclose(res_file);
-                response(new_socket, 400, "Bad Request", "text/html", "<h1>400 Hiciste mal el request pa :(</h1>");
+                response(new_socket, 400, "Bad Request", get_mimetype(path), "<h1>400 Hiciste mal el request pa :(</h1>");
             }
 
         }
@@ -313,5 +271,4 @@ int main(int argc, char const * argv[]){
     return 0;
 
 }
-
 
