@@ -73,10 +73,10 @@ void log_msg(char *msg, char * path) {
 }
 
 
-void response(int socket, int status_code, char *status_message, char *content_type, char *body)
+void response(int socket, int status_code, char *status_message, char *content, char *body)
 {
     char buffer[BUFFER_SIZE] = {0};
-    sprintf(buffer, "HTTP/1.1 %d %s\nContent-Type: %s\n\n%s", status_code, status_message, content_type, body);
+    sprintf(buffer, "HTTP/1.1 %d %s\nContent-Type: %s\n\n%s", status_code, status_message, content, body);
     send(socket, buffer, strlen(buffer), 0);
     printf("Response sent:\n%s\n", buffer);
 }
@@ -110,7 +110,7 @@ int main(int argc, char const * argv[]){
     struct sockaddr_in address;
     // Declarar variable para el tamaño de la estructura de dirección
     int addrlen = sizeof(address);
-    // Declarar el buffer para almacenar los datos recibidos del cliente (BUFFER_SIZE definido en 4096)
+    // Declarar el buffer para almacenar los datos recibidos del cliente (BUFFER_SIZE)
     char buffer[BUFFER_SIZE] = {0};
 
 
