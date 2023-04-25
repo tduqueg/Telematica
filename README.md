@@ -90,29 +90,3 @@ La respuesta debería ser algo similar a esto:
   </html>
   ```
 
-### Solicitud HEAD
-La solicitud se realiza de la siguiente manera:
-
-```
-  HEAD /index.html HTTP/1.1
-  Host: localhost:8080
-```
-
-La respuesta debería ser algo similar a esto:
-
-  ```
-  HTTP/1.1 200 OK
-  Content-Type: text/html
-  ```
-
-### Solicitud POST
-
-La respuesta debería ser algo similar a esto:
-
-```
-  POST /submit_form HTTP/1.1
-  Host: localhost:8080
-  Content-Type: application/x-www-form-urlencoded
-  Content-Length: 13
-
-```
