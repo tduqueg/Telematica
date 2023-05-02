@@ -206,7 +206,7 @@ int main(int argc, char const * argv[]){
 
         } else{
 
-            printf("El método no es GET\n");
+
             FILE * res_file = fopen(full_path, "r");
             // Validar que el archivo de respuesta exista
             if (res_file == NULL){
@@ -223,6 +223,7 @@ int main(int argc, char const * argv[]){
             } else if (strcmp(method, "POST") == 0){
 
                 // El método es POST y el archivo de respuesta existe
+                printf("El método es POST y si se encontró :D\n");
                 int length = 0;
                 // Obtener el valor de Content-Length
                 char * length_header = strstr(buffer, "Content-Length: ");
@@ -251,8 +252,12 @@ int main(int argc, char const * argv[]){
                 body[length] = '\0';
                 // Imprimir el body del request
                 printf("Body: %s\n", body);
+                
+                printf("Body del Request: %s\n",body);
+                
+                log_msg(body,path);
                 // Enviar una respuesta de éxito 200
-                response(new_socket, 200, "OK", get_mimetype(path), "<h1>200 Todo bien pa :D</h1>");
+                response(new_socket, 200, "OK", get_mimetype(path), body);
                 // Liberar la memoria del body
                 free(body);
 
