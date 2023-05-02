@@ -255,7 +255,7 @@ int main(int argc, char const * argv[]){
                 
                 printf("Body del Request: %s\n",body);
                 
-                log_msg(body,path);
+
                 // Enviar una respuesta de éxito 200
                 response(new_socket, 200, "OK", get_mimetype(path), body);
                 // Liberar la memoria del body
